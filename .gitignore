@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/coverage
+.idea
+# yarn.lock
+package-lock.json
+*bak
+
