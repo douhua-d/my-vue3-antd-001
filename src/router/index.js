@@ -14,11 +14,6 @@ const routes = [
         children: [],
     },
     {
-        path: '/about',
-        name: 'About',
-        component: About,
-    },
-    {
         path: '/resource',
         name: 'Resource',
         meta: { title: '资源管理', icon: 'resource' },
@@ -36,6 +31,13 @@ const routes = [
                 meta: { title: '视频管理' },
             }
         ],
+    },
+    {
+        path: '/about',
+        name: 'About',
+        component: About,
+        meta: { title: '关于',requiresAuth: true },
+        children: [],
     },
 ];
 

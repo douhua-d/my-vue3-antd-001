@@ -16,11 +16,12 @@
           </template>
           <a-menu-item
               v-for="child in route.children"
-              :key="child.path"
+              :key="`${route.path}/${child.path}`"
           >
-            {{ child.meta.title }}
+          {{ child.meta.title }}
           </a-menu-item>
         </a-sub-menu>
+
         <!-- 无子路由的菜单项 -->
         <a-menu-item v-else :key="route.path">
           {{ route.meta.title }}
@@ -62,10 +63,9 @@ updateMenuState();
 watch(route, updateMenuState);
 
 // 点击菜单项跳转路由
-const handleClick = ({ key }) => {
-
-  console.log({key});
-  router.push(key);
+const handleClick = (val) => {
+  console.log({val});
+  router.push(val.key);
 };
 
 // 处理菜单展开/折叠
