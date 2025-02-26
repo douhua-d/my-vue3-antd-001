@@ -10,13 +10,13 @@ const routes = [
         path: '/',
         name: 'Home',
         component: Home,
-        meta: { title: '首页',requiresAuth: true },
+        meta: { title: '首页',requiresAuth: true, icon:'SmileFilled' },
         children: [],
     },
     {
         path: '/resource',
         name: 'Resource',
-        meta: { title: '资源管理', icon: 'resource' },
+        meta: { title: '资源管理', icon: 'FormOutlined' },
         children: [
             {
                 path: 'image',
