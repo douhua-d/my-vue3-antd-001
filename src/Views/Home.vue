@@ -1,6 +1,6 @@
 <template>
   我是 首页
-
+  <!--  <img src="@/assets/cat.svg" alt=""/>-->
   <div>
     <input type="color"/>
     <!--    <CanvasCircle/>-->

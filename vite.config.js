@@ -1,60 +1,62 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueJsx from '@vitejs/plugin-vue-jsx';  // 导入vue-jsx插件
-// import styleImport from 'vite-plugin-style-import';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import { resolve } from 'path';
 import purgeCss from 'vite-plugin-purgecss';
 
 // https://vite.dev/config/
-export default defineConfig({
-    plugins: [
-        vue(),
-        vueJsx(),  // 启用 JSX 支持
-        purgeCss(), // 移除未使用的 CSS
-        // styleImport({
-        //     libs: [
-        //         {
-        //             libraryName: 'ant-design-vue',
-        //             esModule: true,
-        //             resolveStyle: (name) => {
-        //                 // 按需加载样式
-        //                 return `ant-design-vue/es/${name}/style/index`;
-        //             },
-        //         },
-        //     ],
-        // }),
-    ],
-    css: {
-        preprocessorOptions: {
-            scss: {
-                additionalData: `@use "@/styles/global.scss";`
-            }
-        }
-    },
-    resolve: {
-        extensions: ['.js', '.vue', '.json'],
-        alias: {
-            '@': resolve(__dirname, 'src'),
-            '@components': resolve(__dirname, 'src/components'),
-            '@assets': resolve(__dirname, 'src/assets')
-        }
-    },
-    build: {
-        // 生产环境优化
-        target: 'esnext', // 目标 JavaScript 版本
-        outDir: 'dist', // 输出目录
-        assetsDir: 'assets', // 静态资源目录
-        rollupOptions: {
-            output: {
-                // 自定义输出文件命名
-                chunkFileNames: 'assets/js/[name]-[hash].js',
-                entryFileNames: 'assets/js/[name]-[hash].js',
-                assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+export default defineConfig(({ command, mode }) => {
+    // 加载环境变量，__dirname 是配置文件所在目录
+    const env = loadEnv(mode, process.cwd(), 'VITE_');
+
+    console.log('Current command:', command); // 输出当前命令（build 或 serve）
+    console.log('Current mode:', mode); // 输出当前模式（development 或 production）
+    console.log('Vite env:', env); // 输出加载的环境变量对象
+
+    return {
+        plugins: [
+            vue(),
+            vueJsx(),
+            purgeCss({
+                safelist: [/^ant-/, 'ant-layout-sider'], // 保留所有以 'ant-' 开头的类名和特定类名
+            }),
+        ],
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: `@use "@/styles/global.scss";`,
+                },
             },
         },
-        minify: 'esbuild', // 使用 esbuild 压缩代码（比 terser 更快）
-        cssCodeSplit: true, // CSS 按需分割
-        sourcemap: false, // 生产环境禁用 source map
-        chunkSizeWarningLimit: 500, // 警告过大的 chunk 大小（单位：KB）
-    },
+        resolve: {
+            extensions: ['.js', '.vue', '.json'],
+            alias: {
+                '@': resolve(__dirname, 'src'),
+                '@components': resolve(__dirname, 'src/components'),
+                '@assets': resolve(__dirname, 'src/assets'),
+                '@stores': resolve(__dirname, 'src/stores'),
+            },
+        },
+        build: {
+            // 动态根据环境调整配置
+            target: 'esnext',
+            outDir: 'dist',
+            assetsDir: 'assets',
+            rollupOptions: {
+                output: {
+                    chunkFileNames: 'assets/js/[name]-[hash].js',
+                    entryFileNames: 'assets/js/[name]-[hash].js',
+                    assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+                },
+            },
+            minify: command === 'build' ? 'esbuild' : false, // 生产环境压缩，开发环境不压缩
+            cssCodeSplit: true,
+            sourcemap: command === 'serve', // 开发环境启用 source map，生产环境禁用
+            chunkSizeWarningLimit: 500,
+        },
+        // // 动态定义环境变量
+        // define: {
+        //     __APP_ENV__: JSON.stringify(mode), // 在代码中可以通过 import.meta.env.__APP_ENV__ 访问
+        // },
+    };
 });
