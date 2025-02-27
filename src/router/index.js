@@ -4,9 +4,7 @@ import { useUserStore } from '@/stores/user'; // 导入 Pinia 存储
 import Home from '../views/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login.vue';
-
-const ResourceImage = () => import('../views/ResourceImage.vue');
-const ResourceVideo = () => import('../views/ResourceVideo.vue');
+import resourceRoute from './resource';
 
 const routes = [
     {
@@ -23,31 +21,13 @@ const routes = [
         children: [],
     },
     {
-        path: '/resource',
-        name: 'Resource',
-        meta: { title: '资源管理', icon: 'FormOutlined' },
-        children: [
-            {
-                path: 'image',
-                name: 'ResourceImage',
-                component: ResourceImage,
-                meta: { title: '图片管理', requiresAuth: true },
-            },
-            {
-                path: 'video',
-                name: 'ResourceVideo',
-                component: ResourceVideo,
-                meta: { title: '视频管理' },
-            }
-        ],
-    },
-    {
         path: '/about',
         name: 'About',
         component: About,
         meta: { title: '关于', requiresAuth: false },
         children: [],
     },
+    resourceRoute,
 ];
 
 const router = createRouter({
