@@ -36,7 +36,7 @@ const rules = {
 const handleLogin = async (values) => {
   try {
     // 模拟 API 调用
-    if (values.username === 'admin' && values.password === '123') {
+    if (values.username === 'admin' && values.password === '123456') {
       userStore.login('mock-token', ['admin'], { name: 'Admin User' });
       message.success('登录成功');
       const redirect = router.currentRoute.value.query.redirect || '/';
